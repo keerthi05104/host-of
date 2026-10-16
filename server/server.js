@@ -7,6 +7,7 @@ import shareRoutes from "./routes/shareRoutes.js";
 import { ensureUploadDir } from "./services/fileStorage.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 import { cleanupExpiredShares } from "./services/cleanupService.js";
+import mongoose from "mongoose";
 
 
 const app = express();
@@ -24,7 +25,16 @@ const shareLimiter = rateLimit({
   legacyHeaders: false,
   message: { success: false, message: "Too many requests. Please wait a little and try again." }
 });
-app.get("/api/health", (req, res) => res.json({ success: true, message: "Send Me API is running." }));
+
+app.get("/api/health", (req, res) => {
+  const dbConnected = mongoose.connection.readyState === 1;
+
+  res.status(dbConnected ? 200 : 503).json({
+    success: dbConnected,
+    api: "running",
+    database: dbConnected ? "connected" : "disconnected",
+  });
+});
 app.use("/api/shares", shareLimiter, shareRoutes);
 app.use(notFound);
 app.use(errorHandler);

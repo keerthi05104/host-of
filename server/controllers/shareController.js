@@ -14,9 +14,12 @@ const publicFile = file => ({
   mimeType: file.mimeType
 });
 
+
 function validShareId(id) {
-  return typeof id === "string" &&
-    /^[A-Za-z0-9_-]{20,80}$/.test(id);
+  return (
+    typeof id === "string" &&
+    /^[A-Za-z0-9_-]{6}$/.test(id)
+  );
 }
 
 function isExpired(share) {
@@ -27,6 +30,9 @@ function isExpired(share) {
 }
 
 export async function createShare(req, res, next) {
+  
+const shareId = randomBytes(6).toString("base64url").slice(0, 6);
+
   const uploaded = req.files || [];
 
   if (!uploaded.length) {

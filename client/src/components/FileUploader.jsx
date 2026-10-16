@@ -1,6 +1,5 @@
 
-
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   CloudUpload,
   File,
@@ -13,7 +12,7 @@ import {
 } from "lucide-react";
 
 const MAX_FILES = 100;
-const MAX_BYTES = 100 * 1024 * 1024;
+const MAX_BYTES = 1024 * 1024 * 1024; // 1 GB per file
 
 const formatSize = (bytes) =>
   bytes < 1024 * 1024
@@ -43,7 +42,6 @@ export default function FileUploader({ onCreate, busy }) {
   const [error, setError] = useState("");
   const [validityDays, setValidityDays] = useState(7);
 
-  
   function openFilePicker() {
     if (!busy) {
       inputRef.current?.click();
@@ -52,7 +50,6 @@ export default function FileUploader({ onCreate, busy }) {
 
   function handleDropzoneClick(event) {
     if (event.target.closest("button, input, a")) return;
-
     openFilePicker();
   }
 
@@ -79,12 +76,12 @@ export default function FileUploader({ onCreate, busy }) {
       }
 
       if (file.size > MAX_BYTES) {
-        setError(`${file.name} is larger than the 45 MB limit.`);
+        setError(`${file.name} exceeds the 1 GB per-file limit.`);
         continue;
       }
 
       if (next.length >= MAX_FILES) {
-        setError("You can share up to 5 files at a time.");
+        setError(`You can share up to ${MAX_FILES} files at a time.`);
         break;
       }
 
@@ -94,8 +91,10 @@ export default function FileUploader({ onCreate, busy }) {
     setFiles(next);
   }
 
-  function removeFuseile(index) {
-    setFiles((current) => current.filter((_, i) => i !== index));
+  function removeFile(index) {
+    setFiles((previousFiles) =>
+      previousFiles.filter((_, fileIndex) => fileIndex !== index)
+    );
   }
 
   async function submit() {
@@ -105,28 +104,14 @@ export default function FileUploader({ onCreate, busy }) {
 
     try {
       const result = await onCreate(files, { validityDays });
-      sessionStorage.setItem(
-  "sendMeLastShare",
-  JSON.stringify(result)
-  
-);
 
       if (result) {
+        sessionStorage.setItem("sendMeLastShare", JSON.stringify(result));
         setFiles([]);
       }
     } catch (err) {
       setError(err.message || "Could not create the share.");
     }
-    const result = await onCreate(files, { validityDays });
-
-sessionStorage.setItem(
-  "sendMeLastShare",
-  JSON.stringify(result)
-);
-
-if (result) {
-  setFiles([]);
-}
   }
 
   return (
@@ -198,31 +183,31 @@ if (result) {
         </p>
 
         <span className="upload-limit">
-          Up to 5 files · Upto 100 MB
+          Up to 5 files · 45 MB Upto
         </span>
       </div>
 
       <div className="validity-field">
-        <label htmlFor="validityDays">File validity</label>
+        <label htmlFor="validityDays">Validity</label>
 
-        <select
-          id="validityDays"
-          value={validityDays}
-          disabled={busy}
-          onChange={(event) =>
-            setValidityDays(Number(event.target.value))
-          }
-        >
-          <option value={1}>01 day</option>
-          <option value={3}>03 day</option>
-          <option value={7}>07 day </option>
-          <option value={14}>14 day</option>
-          <option value={30}>30 day</option>
-        </select>
+        <div className="validity-select-container">
+          <select
+            id="validityDays"
+            value={validityDays}
+            disabled={busy}
+            onChange={(event) =>
+              setValidityDays(Number(event.target.value))
+            }
+          >
+            <option value={1}>1 day</option>
+            <option value={3}>3 days</option>
+            <option value={7}>7 days</option>
+            <option value={14}>14 days</option>
+            <option value={30}>30 days</option>
+          </select>
 
-        <p>
-          Your files will be accessible for the selected duration.
-        </p>
+          <span className="validity-chevron">⌄</span>
+        </div>
       </div>
 
       {error && (
@@ -260,19 +245,23 @@ if (result) {
                   <Icon size={18} />
                 </span>
 
-                <span className="file-details">
-                  <strong title={file.name}>{file.name}</strong>
-                  <small>{formatSize(file.size)}</small>
-                </span>
+                <div className="selected-file-info">
+                  <span className="selected-file-name">{file.name}</span>
+
+                  <span className="selected-file-size">
+                    {formatSize(file.size)}
+                  </span>
+                </div>
 
                 <button
                   type="button"
-                  className="icon-button"
-                  aria-label={`Remove ${file.name}`}
+                  className="remove-file-btn"
                   onClick={() => removeFile(index)}
+                  aria-label={`Remove ${file.name}`}
+                  title="Remove file"
                   disabled={busy}
                 >
-                  <X size={16} />
+                  <X size={18} />
                 </button>
               </div>
             );
@@ -280,17 +269,15 @@ if (result) {
         </div>
       )}
 
-     
-<button
-  type="button"
-  className="create-share-btn"
-  onClick={submit}
-  disabled={busy || files.length === 0}
->
-  <Plus size={18} strokeWidth={2.5} />
-  {busy ? "Creating share..." : "Create share"}
-</button>
-
+      <button
+        type="button"
+        className="create-share-btn"
+        onClick={submit}
+        disabled={busy || files.length === 0}
+      >
+        <Plus size={18} />
+        {busy ? "Creating share..." : "Create share"}
+      </button>
     </div>
   );
 }

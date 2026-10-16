@@ -1194,3 +1194,148 @@ button:focus-visible {
   cursor: not-allowed;
   opacity: 0.6;
 }
+
+.validity-select-container {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+}
+
+.validity-select-container select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding: 13px 42px 13px 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.validity-chevron {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-55%);
+  pointer-events: none;
+  font-size: 20px;
+  color: #6b7280;
+}
+
+
+.validity-select-container {
+  position: relative;
+  display: block;
+  width: 100% !important;
+  min-width: 0;
+  max-width: 100%;
+  flex: 1 1 100%;
+  box-sizing: border-box;
+}
+
+.validity-select-container select#validityDays {
+  display: block;
+  width: 100% !important;
+  min-width: 0;
+  height: 54px;
+  box-sizing: border-box;
+  padding: 0 48px 0 18px;
+
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1f2937;
+
+  background: #fff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.validity-select-container .validity-chevron {
+  position: absolute;
+  top: 50%;
+  right: 18px;
+  transform: translateY(-50%);
+  font-size: 22px;
+  color: #6b7280;
+  pointer-events: none;
+}
+
+/* Professional remove-file button */
+.remove-file-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+
+  background: #f9fafb;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  cursor: pointer;
+  transition: background 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              transform 0.2s ease;
+}
+
+.remove-file-button:hover {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+  transform: scale(1.05);
+}
+
+.remove-file-button:active {
+  transform: scale(0.95);
+}
+
+.remove-file-button:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+.remove-file-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-file-btn:hover:not(:disabled) {
+  color: #dc2626;
+  background: #fef2f2;
+  border-color: #fecaca;
+  transform: rotate(90deg);
+}
+
+.remove-file-btn:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.remove-file-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.remove-file-btn:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 3px;
+}
