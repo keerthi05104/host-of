@@ -1,9 +1,17 @@
+
+const API_BASE_URL = "https://send-me-bt5l.onrender.com";
+
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || "Request failed. Please try again.");
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || `Request failed with status ${response.status}`
+    );
+  }
+
   return data;
 }
-
 
 export async function createShare(files, options = {}) {
   const { validityDays = 7, onProgress } = options;
@@ -14,7 +22,6 @@ export async function createShare(files, options = {}) {
     form.append("files", file);
   });
 
-  // Send the selected expiry duration to the backend.
   form.append("validityDays", String(validityDays));
 
   const reportProgress = (status) => {
@@ -26,7 +33,7 @@ export async function createShare(files, options = {}) {
   reportProgress("uploading");
 
   try {
-    const response = await fetch("/api/shares", {
+    const response = await fetch(`${API_BASE_URL}/api/shares`, {
       method: "POST",
       body: form,
     });
@@ -37,11 +44,16 @@ export async function createShare(files, options = {}) {
   }
 }
 
-
 export async function getShare(shareId) {
-  return parseResponse(await fetch(`/api/shares/${encodeURIComponent(shareId.trim())}`));
+  const url = `${API_BASE_URL}/api/shares/${encodeURIComponent(
+    shareId.trim()
+  )}`;
+
+  return parseResponse(await fetch(url));
 }
 
 export function downloadUrl(shareId, fileId) {
-  return `/api/shares/${encodeURIComponent(shareId)}/files/${encodeURIComponent(fileId)}/download`;
+  return `${API_BASE_URL}/api/shares/${encodeURIComponent(
+    shareId
+  )}/files/${encodeURIComponent(fileId)}/download`;
 }

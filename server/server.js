@@ -10,6 +10,7 @@ import { cleanupExpiredShares } from "./services/cleanupService.js";
 import mongoose from "mongoose";
 
 
+
 const app = express();
 const port = Number(process.env.PORT || 5000);
 const origin = process.env.CLIENT_ORIGIN || "http://localhost:5173";
@@ -55,3 +56,6 @@ setInterval(() => {
   console.error("Server startup failed:", error.message);
   process.exit(1);
 }
+
+
+
