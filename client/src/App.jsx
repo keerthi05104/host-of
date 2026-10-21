@@ -33,7 +33,7 @@ export default function App() {
             <Send size={14} />
           </span>
           <span>
-            sendme<span className="brand-period">.</span>
+            HostOF <span className="brand-period">.</span>
           </span>
         </div>
         <p>Made for moving things forward.</p>

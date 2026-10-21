@@ -8,7 +8,7 @@ export default function Navbar({ onHome, onAccess, currentPage }) {
           <Send size={17} />
         </span>
         <span>
-          send me<span className="brand-period">.</span>
+          Host  OF <span className="brand-period">.</span>
         </span>
       </button>
 
